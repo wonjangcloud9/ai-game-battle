@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI 게임 대결</title>
+<style>
+  :root { --bg:#0E0C0B; --fg:#F1ECE4; --muted:#B4AFA5; --line:rgba(241,236,228,0.14); --accent:#D4502F; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font-family:-apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; line-height:1.5; }
+  main { max-width:760px; margin:0 auto; padding:56px 16px 72px; }
+  h1 { font-size:34px; letter-spacing:-0.02em; }
+  .lead { color:var(--muted); margin-top:10px; font-size:16px; }
+  .prompt { margin-top:28px; padding:18px 20px; border:1px solid var(--line); border-radius:12px; font-size:15px; color:var(--fg); }
+  .prompt b { color:var(--accent); font-weight:700; margin-right:6px; }
+  h2 { margin-top:44px; font-size:20px; }
+  .games { margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  a.game { display:block; padding:20px; border:1px solid var(--line); border-radius:14px; color:var(--fg); text-decoration:none; }
+  a.game:hover { border-color:var(--accent); }
+  .model { font-size:14px; color:var(--muted); }
+  .name { font-size:22px; font-weight:800; margin-top:4px; }
+  .meta { font-size:14px; color:var(--muted); margin-top:10px; }
+  .play { display:inline-block; margin-top:14px; font-weight:700; color:var(--accent); }
+  footer { margin-top:48px; font-size:13px; color:var(--muted); }
+  @media (max-width:560px) { .games { grid-template-columns:1fr; } h1 { font-size:28px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>AI 게임 대결</h1>
+  <p class="lead">두 AI에게 똑같은 한 줄을 주고 게임을 만들게 했습니다. 설치 없이 브라우저에서 바로 해 볼 수 있어요. (PC · 키보드 + 마우스)</p>
+
+  <h2>1라운드 · 3D 배틀로얄</h2>
+  <p class="prompt"><b>프롬프트</b>브라우저에서 바로 플레이할 수 있는 3D 배틀로얄 게임 만들어줘. 이 폴더 안에만 만들고, index.html을 브라우저로 열면 바로 실행되게.</p>
+  <div class="games">
+    <a class="game" href="ep01/gpt/">
+      <div class="model">GPT-6 아스트라 · Codex</div>
+      <div class="name">라스트 라이트</div>
+      <div class="meta">15분 · 코드 981줄 + three.js</div>
+      <span class="play">해 보기 →</span>
+    </a>
+    <a class="game" href="ep01/claude/">
+      <div class="model">클로드 페이블 5.2 · Claude Code</div>
+      <div class="name">오로라 폴</div>
+      <div class="meta">140분 · 코드 7,619줄, 외부 라이브러리 0개</div>
+      <span class="play">해 보기 →</span>
+    </a>
+  </div>
+
+  <footer>두 게임 코드는 AI가 만든 그대로 올렸습니다. 라스트 라이트는 three.js(MIT)를 씁니다.</footer>
+</main>
+</body>
+</html>

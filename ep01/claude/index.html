@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AURORA FALL — 3D 배틀로얄</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<!-- ======================= in-game HUD ======================= -->
+<div id="hud" class="hidden">
+  <div id="zoneOut"></div>
+  <div id="lowHp"></div>
+  <div id="scope" class="hidden"><div class="scopeLens"></div><div class="scopeH"></div><div class="scopeV"></div></div>
+
+  <div id="topCenter">
+    <canvas id="compass" width="520" height="34"></canvas>
+    <div id="zoneInfo"><span class="zoneDot"></span><span id="zoneText"></span><b id="zoneTimer"></b></div>
+  </div>
+
+  <div id="topRight">
+    <canvas id="minimap" width="220" height="220"></canvas>
+    <div id="counts">
+      <div class="count"><span class="countLabel">생존</span><b id="aliveCount">40</b></div>
+      <div class="count"><span class="countLabel">처치</span><b id="killCount">0</b></div>
+    </div>
+    <div id="fps"></div>
+  </div>
+
+  <div id="killfeed"></div>
+  <div id="toasts"></div>
+
+  <div id="announce"><div id="announceMain"></div><div id="announceSub"></div></div>
+
+  <div id="crosshair" class="hidden">
+    <i id="chTop"></i><i id="chBottom"></i><i id="chLeft"></i><i id="chRight"></i><i id="chDot"></i>
+  </div>
+  <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
+  <div id="dmgDir"></div>
+  <div id="dmgNums"></div>
+  <div id="poiLabels"></div>
+
+  <div id="prompt" class="hidden"><kbd>F</kbd><span id="promptText"></span></div>
+  <div id="warn" class="hidden"></div>
+  <div id="hint" class="hidden"><kbd>F</kbd> 상자 · 무기 교체 <kbd>4</kbd><kbd>5</kbd><kbd>6</kbd> 회복 <kbd>G</kbd> 수류탄 <kbd>C</kbd> 앉기 <kbd>M</kbd> 지도</div>
+  <div id="progress" class="hidden"><div class="progressTrack"><div id="progressBar"></div></div><span id="progressText"></span></div>
+
+  <div id="dropHud" class="hidden"><div id="dropMain"></div><div id="dropSub"></div></div>
+  <div id="spectate" class="hidden">관전 중 · <b id="specName"></b><span class="specHint">클릭: 다음 플레이어 · Enter: 다시 하기</span></div>
+
+  <div id="bottomCenter">
+    <div class="consumables">
+      <div class="cons"><kbd>4</kbd><span class="consIcon bandage"></span><b id="cBandage">0</b></div>
+      <div class="cons"><kbd>5</kbd><span class="consIcon medkit"></span><b id="cMedkit">0</b></div>
+      <div class="cons"><kbd>6</kbd><span class="consIcon cell"></span><b id="cCell">0</b></div>
+      <div class="cons"><kbd>G</kbd><span class="consIcon nade"></span><b id="cNade">0</b></div>
+    </div>
+    <div class="bar shield"><div id="shieldBar" class="fill"></div><span id="shieldText" class="barText">0</span></div>
+    <div class="bar hp"><div id="hpBar" class="fill"></div><span id="hpText" class="barText">100</span></div>
+  </div>
+
+  <div id="bottomRight">
+    <div id="ammo"><b id="ammoMag">—</b><span id="ammoReserve"></span><em id="ammoType"></em></div>
+    <div id="slots">
+      <div id="slot0" class="slot empty"><kbd>1</kbd><span class="slotName">비어 있음</span><b class="slotAmmo"></b></div>
+      <div id="slot1" class="slot empty"><kbd>2</kbd><span class="slotName">비어 있음</span><b class="slotAmmo"></b></div>
+      <div id="slot2" class="slot empty"><kbd>3</kbd><span class="slotName">비어 있음</span><b class="slotAmmo"></b></div>
+    </div>
+  </div>
+</div>
+
+<div id="bigmap" class="hidden"><canvas id="bigmapCanvas" width="760" height="760"></canvas><div class="bigmapHint">M / Tab — 지도 닫기</div></div>
+
+<!-- ======================= main menu ======================= -->
+<div id="menu" class="overlay hidden">
+  <div class="menuLeft">
+    <div class="logo">
+      <div class="logoSmall">LAST ONE UNDER THE LIGHTS</div>
+      <h1>AURORA<span>FALL</span></h1>
+      <div class="logoSub">오로라 폴 — 40인 배틀로얄</div>
+    </div>
+    <div class="panel">
+      <label class="field"><span>닉네임</span><input id="nameInput" type="text" maxlength="12" value="플레이어" spellcheck="false" autocomplete="off"></label>
+      <div class="field"><span>슈트 색상</span><div id="colorRow"></div></div>
+      <div class="field"><span>난이도</span>
+        <div class="seg" id="diffSeg">
+          <button id="diffEasy" type="button" data-v="easy">쉬움</button>
+          <button id="diffNormal" type="button" data-v="normal" class="on">보통</button>
+          <button id="diffHard" type="button" data-v="hard">어려움</button>
+        </div>
+      </div>
+      <button id="btnStart" class="primary" type="button">게임 시작</button>
+      <div class="hint">클릭하면 마우스가 잠깁니다 · ESC로 일시정지</div>
+      <div id="record" class="record hidden"></div>
+    </div>
+    <div class="panel settings">
+      <div class="field"><span>그래픽</span>
+        <select id="qualitySel">
+          <option value="low">낮음</option><option value="medium">보통</option><option value="high" selected>높음</option><option value="ultra">최고</option>
+        </select>
+      </div>
+      <label class="field"><span>마우스 감도</span><input id="sensRange" type="range" min="0.2" max="3" step="0.05" value="1"></label>
+      <label class="field"><span>효과음</span><input id="volRange" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+      <label class="field"><span>음악</span><input id="musicRange" type="range" min="0" max="1" step="0.05" value="0.55"></label>
+      <button id="btnFull" type="button">전체 화면</button>
+    </div>
+  </div>
+  <div class="menuRight panel">
+    <h2>조작법</h2>
+    <ul class="keys">
+      <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>이동</span></li>
+      <li><kbd>Shift</kbd><span>달리기</span></li>
+      <li><kbd>Space</kbd><span>점프 / 강하 / 글라이더</span></li>
+      <li><kbd>C</kbd><span>앉기</span></li>
+      <li><kbd>좌클릭</kbd><span>사격 / 주먹</span></li>
+      <li><kbd>우클릭</kbd><span>조준 (저격총은 스코프)</span></li>
+      <li><kbd>R</kbd><span>재장전</span></li>
+      <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><span>무기 교체 (휠도 가능)</span></li>
+      <li><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><span>붕대 / 구급상자 / 실드 셀</span></li>
+      <li><kbd>G</kbd><span>수류탄</span></li>
+      <li><kbd>F</kbd><span>상자 열기 / 무기 교체</span></li>
+      <li><kbd>M</kbd><kbd>Tab</kbd><span>전체 지도</span></li>
+    </ul>
+    <h2>규칙</h2>
+    <p class="rules">수송기에서 뛰어내려 무기를 찾고, 좁혀 오는 <b>오로라 장벽</b> 안에서 끝까지 살아남으세요. 해가 지고 오로라가 하늘을 덮을 때 서 있는 마지막 한 명이 승리합니다.</p>
+  </div>
+  <div class="footer">순수 WebGL2 · WebAudio — 외부 라이브러리와 에셋 파일 없이 전부 코드로 생성됩니다</div>
+</div>
+
+<!-- ======================= pause ======================= -->
+<div id="pause" class="overlay hidden">
+  <div class="panel center">
+    <h2>일시정지</h2>
+    <button id="btnResume" class="primary" type="button">계속하기</button>
+    <label class="field"><span>마우스 감도</span><input id="pSens" type="range" min="0.2" max="3" step="0.05" value="1"></label>
+    <label class="field"><span>효과음</span><input id="pVol" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+    <button id="btnRestart" type="button">새 게임</button>
+    <button id="btnQuit" type="button">메뉴로</button>
+  </div>
+</div>
+
+<!-- ======================= result ======================= -->
+<div id="end" class="overlay hidden">
+  <div class="panel center result">
+    <div id="endTitle">탈락</div>
+    <div id="endPlace"></div>
+    <div id="endStats"></div>
+    <div class="row">
+      <button id="btnAgain" class="primary" type="button">다시 하기</button>
+      <button id="btnSpectate" type="button">관전</button>
+      <button id="btnMenu" type="button">메뉴로</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= loading / errors ======================= -->
+<div id="loading" class="overlay">
+  <div class="loadBox">
+    <h1>AURORA<span>FALL</span></h1>
+    <div class="loadTrack"><div id="loadBar"></div></div>
+    <div id="loadText">섬을 생성하는 중…</div>
+  </div>
+</div>
+<div id="fatal" class="overlay hidden"><div class="panel center"><h2>실행할 수 없습니다</h2><pre id="fatalText"></pre></div></div>
+
+<script src="js/util.js"></script>
+<script src="js/config.js"></script>
+<script src="js/meshbuilder.js"></script>
+<script src="js/terrain.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/worldgen.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/items.js"></script>
+<script src="js/character.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/zone.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/game.js"></script>
+<script src="js/env.js"></script>
+<script src="js/shaders.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/charmodel.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/input.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

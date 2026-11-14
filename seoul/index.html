@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>서울 632년 3D — Seoul, 632 years</title>
+<meta name="description" content="1394년부터 2026년까지, 서울의 건물이 실제로 지어진 해에 솟아오릅니다. 서울시 건축물대장 + OpenStreetMap." />
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Inter:wght@400;700&family=Noto+Sans+KR:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --ink: #fbf6ea; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #0d1014; color: var(--ink); font-family: "Inter", "Noto Sans KR", sans-serif; overflow: hidden; }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0d1014; }
+  #gl { width: 100vw; height: 100vh; object-fit: cover; cursor: grab; touch-action: none; display: block; }
+  #gl:active { cursor: grabbing; }
+  #yearbox { position: fixed; left: 4vw; top: 3.2vh; pointer-events: none; text-shadow: 0 0 2px rgba(0,0,0,.8), 0 2px 18px rgba(0,0,0,.6); }
+  #era { font-weight: 700; font-size: clamp(11px, 1.1vw, 20px); letter-spacing: .3em; text-transform: uppercase; opacity: .92; }
+  #era .es { margin-left: 14px; opacity: .7; letter-spacing: .12em; }
+  #year { font-family: "EB Garamond", serif; font-size: clamp(64px, 9vw, 168px); line-height: .95; font-variant-numeric: tabular-nums; }
+  #panel { position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 4vw 16px; background: linear-gradient(0deg, rgba(8,10,14,.86), rgba(8,10,14,0)); }
+  #row { display: flex; gap: 12px; align-items: center; }
+  button { font: 700 14px "Inter", "Noto Sans KR", sans-serif; color: var(--ink); background: rgba(251,246,234,.12); border: 1px solid rgba(251,246,234,.28); border-radius: 6px; padding: 9px 13px; cursor: pointer; white-space: nowrap; }
+  button:hover, button.on { background: rgba(251,246,234,.26); }
+  #play { min-width: 76px; }
+  #yr { flex: 1; accent-color: #ffd84a; height: 28px; }
+  #chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+  #chips .sep { width: 1px; height: 22px; background: rgba(251,246,234,.25); margin: 0 4px; }
+  #help { position: fixed; right: 4vw; top: 3.6vh; text-align: right; font-size: 13px; line-height: 1.6; opacity: .82; text-shadow: 0 0 2px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.7); pointer-events: none; }
+  #credit { margin-top: 10px; font-size: 11.5px; line-height: 1.5; opacity: .7; }
+  #credit a { color: var(--ink); }
+  #load { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; background: #0d1014; font-size: 18px; z-index: 5; }
+  #load small { opacity: .65; font-size: 13px; }
+  @media (max-width: 700px) { #help { display: none; } button { padding: 8px 10px; font-size: 13px; } }
+</style>
+</head>
+<body>
+<div id="load"><div>서울을 짓는 중… · Building Seoul…</div><small>건물 23만 채를 불러옵니다 (약 26MB) · PC 크롬 권장</small></div>
+<div id="stage"><canvas id="gl" width="1920" height="1080"></canvas></div>
+<div id="yearbox"><div id="era"></div><div id="year">1394</div></div>
+<div id="help">끌기: 돌리기 · 휠: 확대 · Shift+끌기(또는 오른쪽 버튼): 이동<br />Drag: orbit · Wheel: zoom · Shift+drag: pan</div>
+<div id="panel">
+  <div id="row"><button id="play">▶ 재생</button><input id="yr" type="range" min="1394" max="2026" step="0.05" value="1394" /></div>
+  <div id="chips"></div>
+  <div id="credit">건물 준공 연도: 서울특별시 건축물대장(서울 열린데이터광장 OA-22424, 공공누리 1유형) · 건물 위치: 소상공인시장진흥공단 상가(상권)정보 · 건물·도로·다리·궁궐 배치: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL) · 지형: AWS Terrain Tiles · 현대 건물 약 60%만 실제 준공 연도, 나머지는 주변 건물로 추정. 조선 시대 집·나무는 그림입니다. AI 그림 없음.</div>
+</div>
+<script>
+  window.__timelines = {};
+  window.CH = { years: [[0, 1394], [1, 2026]], sun: [[0, 150, 32]], keys: [[0, [0, 3000, 6000], [0, 0, 0]], [1, [0, 3000, 6000], [0, 0, 0]]], tags: [], lang: "ko",
+    smoke: [{"x": -90, "z": -1390, "y0": 1591.95, "y1": 1592.85, "r": 150, "h": 480}, {"x": 1218, "z": -1481, "y0": 1592.0, "y1": 1592.85, "r": 130, "h": 430}, {"x": 1600, "z": -1450, "y0": 1592.05, "y1": 1592.85, "r": 110, "h": 380}, {"x": 1410, "z": -984, "y0": 1592.05, "y1": 1592.85, "r": 120, "h": 400}, {"x": 400, "z": -700, "y0": 1592.1, "y1": 1592.85, "r": 100, "h": 330}, {"x": 900, "z": -250, "y0": 1592.15, "y1": 1592.85, "r": 110, "h": 340}, {"x": -400, "z": -500, "y0": 1592.15, "y1": 1592.85, "r": 90, "h": 300}, {"x": -1702, "z": 5372, "y0": 1950.47, "y1": 1950.75, "r": 60, "h": 260}, {"x": 200, "z": -600, "y0": 1950.5, "y1": 1951.3, "r": 160, "h": 520}, {"x": -500, "z": 300, "y0": 1950.55, "y1": 1951.3, "r": 140, "h": 460}, {"x": 1300, "z": -200, "y0": 1950.6, "y1": 1951.3, "r": 150, "h": 480}, {"x": -1200, "z": -800, "y0": 1950.6, "y1": 1951.3, "r": 120, "h": 420}, {"x": 2400, "z": -900, "y0": 1950.65, "y1": 1951.3, "r": 130, "h": 440}, {"x": 600, "z": 900, "y0": 1950.65, "y1": 1951.3, "r": 120, "h": 420}, {"x": -240, "z": 669, "y0": 2007.95, "y1": 2008.25, "r": 35, "h": 180}], live: { year: 1394, cam: [1500, 1600, 2600], look: [0, 0, -1000], sun: [150, 32] } };
+</script>
+<script src="assets/three.min.js"></script>
+<script src="assets/seoul3.js"></script>
+<script src="assets/engine.js"></script>
+<script>
+(() => {
+  const L = window.CH.live, cv = document.getElementById("gl"), yr = document.getElementById("yr"), playB = document.getElementById("play");
+  const PLACES = [["도성 전체 · Old city", [0, -700], 205, 34, 4300], ["경복궁 · Gyeongbokgung", [-90, -1390], 190, 30, 900], ["한강 · Han River", [-1700, 5000], 215, 26, 4200],
+    ["여의도 · Yeouido", [-4675, 4700], 150, 28, 2600], ["강남 · Gangnam", [4600, 5600], 200, 28, 3600], ["잠실 · Jamsil", [10990, 5914], 140, 22, 3300], ["서울 전체 · All Seoul", [2000, 1500], 180, 42, 17000]];
+  const SUNS = [["낮 · Day", [150, 32]], ["노을 · Dusk", [255, 5]], ["밤 · Night", [280, -14]]];
+  const o = { tx: 0, tz: -700, az: 205, el: 34, d: 4300 };
+  let goal = null, playing = false, dirty = true, last = performance.now();
+  const chips = document.getElementById("chips");
+  PLACES.forEach(([name, t, az, el, d]) => { const b = document.createElement("button"); b.textContent = name; b.onclick = () => { goal = { tx: t[0], tz: t[1], az, el, d }; }; chips.appendChild(b); });
+  const sep = document.createElement("div"); sep.className = "sep"; chips.appendChild(sep);
+  const sunBs = SUNS.map(([name, s], i) => { const b = document.createElement("button"); b.textContent = name; if (!i) b.className = "on";
+    b.onclick = () => { L.sun = s; sunBs.forEach((x) => x.classList.toggle("on", x === b)); dirty = true; }; chips.appendChild(b); return b; });
+  function place() {
+    const a = o.az * Math.PI / 180, e = o.el * Math.PI / 180, g = window.__seoulGround(o.tx, -o.tz);
+    const cx = o.tx + Math.sin(a) * Math.cos(e) * o.d, cz = o.tz + Math.cos(a) * Math.cos(e) * o.d;
+    let cy = g + Math.sin(e) * o.d; cy = Math.max(cy, window.__seoulGround(cx, -cz) + 40);
+    L.cam = [cx, cy, cz]; L.look = [o.tx, g + 20, o.tz];
+  }
+  // pointer: drag = orbit, shift/right drag = pan, wheel/pinch = zoom
+  const pts = new Map(); let pinch = 0;
+  cv.addEventListener("contextmenu", (e) => e.preventDefault());
+  cv.addEventListener("pointerdown", (e) => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY, e.shiftKey || e.button === 2]); goal = null; });
+  cv.addEventListener("pointerup", (e) => { pts.delete(e.pointerId); pinch = 0; });
+  cv.addEventListener("pointercancel", (e) => { pts.delete(e.pointerId); pinch = 0; });
+  cv.addEventListener("pointermove", (e) => {
+    const p = pts.get(e.pointerId); if (!p) return;
+    const dx = e.clientX - p[0], dy = e.clientY - p[1]; p[0] = e.clientX; p[1] = e.clientY;
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; const dd = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) o.d = Math.min(Math.max(o.d * pinch / dd, 250), 30000); pinch = dd; }
+    else if (p[2]) { const a = o.az * Math.PI / 180, k = o.d / 900; o.tx -= (Math.cos(a) * dx + Math.sin(a) * dy) * k; o.tz -= (-Math.sin(a) * dx + Math.cos(a) * dy) * k; }
+    else { o.az -= dx * 0.25; o.el = Math.min(Math.max(o.el + dy * 0.2, 6), 85); }
+    o.tx = Math.min(Math.max(o.tx, -17000), 17000); o.tz = Math.min(Math.max(o.tz, -15000), 15000); dirty = true;
+  });
+  cv.addEventListener("wheel", (e) => { e.preventDefault(); goal = null; o.d = Math.min(Math.max(o.d * Math.exp(e.deltaY * 0.0012), 250), 30000); dirty = true; }, { passive: false });
+  yr.addEventListener("input", () => { L.year = +yr.value; dirty = true; });
+  function setPlay(v) { playing = v; playB.textContent = v ? "❚❚ 멈춤" : "▶ 재생"; }
+  playB.onclick = () => { if (!playing && L.year >= 2025.9) { L.year = 1394; } setPlay(!playing); };
+  // years per second: linger where things happen
+  const rate = (y) => y < 1400 ? 1.2 : y < 1590 ? 22 : y < 1594 ? 0.8 : y < 1860 ? 30 : y < 1870 ? 2 : y < 1945 ? 5 : y < 1949 ? 3 : y < 1954 ? 0.7 : y < 2020 ? 3.2 : 2;
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.1); last = now;
+    if (goal) { let done = true; for (const k in goal) { let dv = goal[k] - o[k]; if (k === "az") dv = ((dv + 540) % 360) - 180; if (Math.abs(dv) > 0.5) done = false; o[k] += dv * Math.min(dt * 3.2, 1); } if (done) goal = null; dirty = true; }
+    if (playing) { L.year = Math.min(L.year + rate(L.year) * dt, 2026); yr.value = L.year; if (L.year >= 2026) setPlay(false); dirty = true; }
+    const fire = (L.year > 1592.3 && L.year < 1593.2) || (L.year > 1950.4 && L.year < 1951.4) || (L.year > 2008.0 && L.year < 2008.4);
+    if (dirty || fire) { place(); window.__seoulRender(now / 1000); dirty = false; }
+    requestAnimationFrame(frame);
+  }
+  window.__seoulReady.then(() => { document.getElementById("load").remove(); requestAnimationFrame(frame); });
+})();
+</script>
+</body>
+</html>

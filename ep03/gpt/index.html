@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ee623c">
+  <title>DUNE DRIFT — Sunset Circuit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="3D 카트 레이싱 서킷"></canvas>
+  <div id="vignette"></div>
+  <div id="speed-lines"></div>
+  <header class="topbar">
+    <a class="brand" href="#" id="brand" aria-label="Dune Drift 홈"><span class="brand-icon"><i></i><i></i><i></i></span><span>DUNE<span class="brand-light">DRIFT</span><small>THE DESERT GRAND PRIX</small></span></a>
+    <div class="top-actions"><span class="edition">SUNSET SERIES <b>01</b></span><button id="sound" class="icon-button" aria-label="소리 끄기" title="소리 켜기 / 끄기 (M)"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button><button id="pause-button" class="icon-button hidden" aria-label="일시 정지" title="일시 정지 (Esc)"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button></div>
+  </header>
+
+  <main id="menu" class="menu">
+    <div class="menu-wash"></div>
+    <section class="intro">
+      <div class="eyebrow"><span></span> LESS GRIP. MORE THRILL.</div>
+      <h1>CHASE<br>THE <em>APEX.</em></h1>
+      <p class="intro-copy">석양을 향해, 코너를 가로질러.<br>드리프트로 채우고 부스터로 앞서가세요.</p>
+      <div class="race-specs"><div><strong>03</strong><span>LAPS</span></div><div><strong>04</strong><span>RACERS</span></div><div><strong>∞</strong><span>GOOD TIMES</span></div></div>
+      <button id="start" class="primary-button"><span>레이스 시작 <small>LET'S RACE</small></span><span class="button-arrow">↗</span></button>
+      <div class="best-record" id="menu-best">당신의 첫 번째 기록을 남겨보세요.</div>
+      <div class="control-guide"><div><span class="key-group"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>운전</span></div><div><kbd>SPACE</kbd><span>드리프트</span></div><div><kbd>SHIFT</kbd><span>부스터</span></div></div>
+      <p class="menu-hint">방향키도 지원 · R 차량 복귀 · ESC 일시 정지</p>
+    </section>
+    <aside class="circuit-card"><div class="circuit-top"><span><i class="live-dot"></i> THE TRACK</span><span>01 / 01</span></div><canvas id="preview-map" width="240" height="150"></canvas><div class="circuit-title">SUNSET CIRCUIT<span>선셋 서킷</span></div><div class="circuit-tags"><span>DESERT</span><span>TECHNICAL</span><span>GOLDEN HOUR</span></div></aside>
+    <footer class="menu-footer"><span>BUILT FOR THE CORNERS.</span><span>NO DOWNLOADS. JUST DRIVE. <i>↗</i></span></footer>
+  </main>
+
+  <section id="hud" class="hidden" aria-label="레이스 정보">
+    <div class="race-top"><div class="position-box"><span class="micro-label">POSITION</span><div><strong id="position">4</strong><span>/ 4</span></div></div><div class="lap-box"><span class="micro-label">LAP</span><div><strong id="lap">01</strong><span>/ 03</span></div></div><div class="time-box"><span class="micro-label">RACE TIME</span><strong id="time">00:00.000</strong><div>BEST LAP <span id="best-lap">— — : — —</span></div></div></div>
+    <div class="leaderboard" id="leaderboard"></div>
+    <div class="map-panel"><div><span>SUNSET CIRCUIT</span><span class="live-dot"></span></div><canvas id="minimap" width="240" height="172"></canvas><p><span class="map-key"></span> YOU <span class="map-key rival"></span> RIVALS</p></div>
+    <div class="drift-message" id="drift-message"><span id="drift-title">DRIFTING</span><strong id="drift-gain">+00</strong><small id="drift-sub">KEEP IT SIDEWAYS</small></div>
+    <div class="driving-tip" id="driving-tip"><kbd>SPACE</kbd> + 방향키로 드리프트 <span>→</span> <kbd>SHIFT</kbd> 부스터</div>
+    <div class="speed-panel"><div class="speed-number"><strong id="speed">000</strong><span>KM/H</span></div><div class="speed-ticks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="boost-label"><span><svg viewBox="0 0 12 16"><path d="m7 0-7 9h5l-1 7 8-10H7Z"/></svg> BOOST <b id="boost-status">DRIFT TO CHARGE</b></span><span id="boost-value">0%</span></div><div class="boost-track"><div id="boost-fill"></div><i></i><i></i><i></i></div><div class="boost-help"><kbd>SHIFT</kbd><span id="boost-help-text">드리프트로 부스터 충전</span></div></div>
+    <div id="wrong-way" class="wrong-way hidden">↶ 역주행 중입니다</div>
+  </section>
+
+  <div class="countdown hidden" id="countdown"><span>READY TO DUST?</span><strong id="count-number">3</strong><div class="count-lights"><i></i><i></i><i></i></div></div>
+  <div id="notification" class="notification"></div>
+
+  <section id="pause" class="modal hidden" aria-label="일시 정지"><div class="modal-card"><div class="eyebrow">TAKE A BREATHER</div><h2>PIT STOP.</h2><p>다음 코너가 기다리고 있어요.</p><button id="resume" class="primary-button">계속 달리기 <span>↗</span></button><button id="restart" class="secondary-button">처음부터 다시</button><button id="back-menu" class="text-button">메인 화면</button><p class="modal-keys">WASD / 방향키 · SPACE 드리프트 · SHIFT 부스터<br>R 차량 복귀 · M 소리 · ESC 계속</p></div></section>
+  <section id="finish" class="modal hidden" aria-label="레이스 결과"><div class="modal-card finish-card"><div class="eyebrow">THE DUST HAS SETTLED</div><div class="finish-place"><strong id="finish-position">1</strong><span id="finish-suffix">ST</span></div><h2 id="finish-title">WHAT A RIDE.</h2><p id="finish-copy">모든 코너에 당신의 흔적을 남겼습니다.</p><div class="result-times"><div><span>TOTAL TIME</span><strong id="finish-time"></strong></div><div><span>BEST LAP</span><strong id="finish-best"></strong></div></div><div class="new-record hidden" id="new-record">↗ NEW PERSONAL BEST</div><div id="lap-results" class="lap-results"></div><button id="race-again" class="primary-button">한 번 더 달리기 <span>↗</span></button><button id="finish-menu" class="text-button">메인 화면</button></div></section>
+  <div id="touch-controls" class="hidden"><div class="touch-steering"><button data-key="ArrowLeft" aria-label="왼쪽">◀</button><button data-key="ArrowRight" aria-label="오른쪽">▶</button></div><div class="touch-actions"><button data-key="Space">DRIFT</button><button data-key="ShiftLeft" class="touch-boost">BOOST</button><button data-key="ArrowUp" class="touch-gas">GO</button><button data-key="ArrowDown">BRAKE</button></div></div>
+  <div id="error" class="modal hidden"><div class="modal-card"><h2>잠깐만요.</h2><p id="error-message">이 브라우저에서는 WebGL을 사용할 수 없습니다. 하드웨어 가속을 켠 Chrome, Edge 또는 Safari에서 다시 열어주세요.</p></div></div>
+  <script src="engine.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

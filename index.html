@@ -3,101 +3,196 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI 게임 대결</title>
+<title>원장이 만든 것들</title>
+<meta name="description" content="개발자 원장이 직접 만든 것들. 서울 632년 3D, BGM Maker, AI 게임 대결 — 전부 브라우저에서 바로 돌아갑니다." />
+<meta property="og:title" content="원장이 만든 것들" />
+<meta property="og:description" content="서울 632년 3D, BGM Maker, AI 게임 대결 — 전부 브라우저에서 바로 돌아갑니다." />
+<meta property="og:image" content="https://wonjangcloud9.github.io/ai-game-battle/img/seoul.jpg" />
 <style>
-  :root { --bg:#0E0C0B; --fg:#F1ECE4; --muted:#B4AFA5; --line:rgba(241,236,228,0.14); --accent:#D4502F; }
+  :root { --bg:#0E0C0B; --card:#161312; --fg:#F1ECE4; --muted:#B4AFA5; --line:rgba(241,236,228,0.14); --accent:#E8643F; }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--fg); font-family:-apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; line-height:1.5; }
-  main { max-width:760px; margin:0 auto; padding:56px 16px 72px; }
-  h1 { font-size:34px; letter-spacing:-0.02em; }
-  .lead { color:var(--muted); margin-top:10px; font-size:16px; }
-  .prompt { margin-top:28px; padding:18px 20px; border:1px solid var(--line); border-radius:12px; font-size:15px; color:var(--fg); }
-  .prompt b { color:var(--accent); font-weight:700; margin-right:6px; }
-  h2 { margin-top:44px; font-size:20px; }
-  .games { margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  a.game { display:block; padding:20px; border:1px solid var(--line); border-radius:14px; color:var(--fg); text-decoration:none; }
-  a.game:hover { border-color:var(--accent); }
-  .model { font-size:14px; color:var(--muted); }
-  .name { font-size:22px; font-weight:800; margin-top:4px; }
-  .meta { font-size:14px; color:var(--muted); margin-top:10px; }
-  .play { display:inline-block; margin-top:14px; font-weight:700; color:var(--accent); }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--fg); font-family:-apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; line-height:1.55; word-break:keep-all; }
+  main { max-width:960px; margin:0 auto; padding:56px 16px 80px; }
+  a { color:inherit; }
+  .who { font-size:14px; color:var(--accent); font-weight:700; letter-spacing:0.04em; }
+  h1 { font-size:44px; letter-spacing:-0.03em; line-height:1.15; margin-top:8px; }
+  .lead { color:var(--muted); margin-top:14px; font-size:17px; max-width:36em; }
+  .btns { margin-top:24px; display:flex; flex-wrap:wrap; gap:10px; }
+  .btn { display:inline-block; padding:12px 20px; border-radius:999px; font-weight:700; font-size:15px; text-decoration:none; border:1px solid var(--line); }
+  .btn.main { background:var(--accent); border-color:var(--accent); color:#16100D; }
+  .btn:hover { border-color:var(--accent); }
+  h2 { margin-top:64px; font-size:24px; letter-spacing:-0.02em; }
+  .sub { color:var(--muted); font-size:15px; margin-top:6px; }
+
+  .can { margin-top:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .can div { padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
+  .can b { display:block; font-size:17px; }
+  .can span { display:block; margin-top:6px; font-size:14px; color:var(--muted); }
+
+  .grid { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  a.work { display:block; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--card); text-decoration:none; }
+  a.work:hover { border-color:var(--accent); }
+  a.work img { display:block; width:100%; aspect-ratio:16/9; object-fit:cover; background:#000; }
+  a.work.wide { grid-column:1 / -1; }
+  a.work.wide img { aspect-ratio:21/9; }
+  .body { padding:16px 18px 18px; }
+  .kind { font-size:13px; color:var(--muted); }
+  .name { font-size:22px; font-weight:800; margin-top:2px; letter-spacing:-0.02em; }
+  .wide .name { font-size:28px; }
+  .desc { font-size:15px; color:var(--fg); margin-top:8px; }
+  .meta { font-size:13px; color:var(--muted); margin-top:8px; }
+  .play { display:inline-block; margin-top:12px; font-weight:700; color:var(--accent); font-size:15px; }
+
+  .round { margin-top:26px; font-size:16px; font-weight:700; }
+  .prompt { margin-top:8px; font-size:14px; color:var(--muted); }
+  .prompt b { color:var(--accent); margin-right:6px; }
+  .pair { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  #contact { margin-top:72px; padding:32px 24px; border:1px solid var(--accent); border-radius:20px; background:var(--card); }
+  #contact h2 { margin-top:0; font-size:28px; }
+  #contact p { margin-top:10px; font-size:16px; color:var(--muted); max-width:38em; }
+  #contact ol { margin:16px 0 0 20px; font-size:15px; }
+  #contact li { margin-top:4px; }
+  #contact .mail { font-size:14px; margin-top:12px; user-select:all; }
   footer { margin-top:48px; font-size:13px; color:var(--muted); }
-  @media (max-width:560px) { .games { grid-template-columns:1fr; } h1 { font-size:28px; } }
+  @media (max-width:640px) {
+    h1 { font-size:34px; } .can, .grid, .pair { grid-template-columns:1fr; }
+    a.work.wide img { aspect-ratio:16/9; } .wide .name { font-size:22px; }
+  }
 </style>
 </head>
 <body>
 <main>
-  <h1>AI 게임 대결</h1>
-  <p class="lead">두 AI에게 똑같은 한 줄을 주고 게임을 만들게 했습니다. 설치 없이 브라우저에서 바로 해 볼 수 있어요. (PC · 키보드 + 마우스)</p>
+  <div class="who">원장코딩</div>
+  <h1>원장이 만든 것들</h1>
+  <p class="lead">개발자 원장이 직접 만든 것들입니다. 설치 없이 브라우저에서 바로 돌아가요. 만드는 과정은 유튜브에 전부 올립니다.</p>
+  <div class="btns">
+    <a class="btn main" href="#contact">만들어 달라고 하기</a>
+    <a class="btn" href="https://www.youtube.com/channel/UChisjP6QUB8c1tDV_uOK4Uw">유튜브 원장코딩</a>
+    <a class="btn" href="https://github.com/wonjangcloud9">깃허브</a>
+  </div>
 
-  <h2>1라운드 · 3D 배틀로얄</h2>
+  <h2>이런 걸 만듭니다</h2>
+  <div class="can">
+    <div><b>데이터로 만든 3D · 지도</b><span>공공 데이터를 눈으로 보이게. 건물 32만 채를 지은 해 그대로 세운 서울처럼.</span></div>
+    <div><b>브라우저에서 도는 게임 · 체험</b><span>링크 하나로 바로 열리는 3D 게임, 행사·홍보용 체험 페이지.</span></div>
+    <div><b>AI를 넣은 웹 서비스</b><span>글로 쓰면 결과가 나오는 서비스. 로그인·결제·운영까지.</span></div>
+  </div>
+
+  <h2>만든 것</h2>
+  <div class="grid">
+    <a class="work wide" href="seoul/">
+      <img src="img/seoul.jpg" alt="3D로 다시 지은 2026년 서울, 잠실 쪽에서 본 모습" />
+      <div class="body">
+        <div class="kind">데이터 3D · 직접 돌려 보기</div>
+        <div class="name">서울 632년</div>
+        <div class="desc">1394년 빈 골짜기에서 2026년까지. 건물이 실제로 지어진 해에 맞춰 올라옵니다. 해를 끌어서 원하는 때로 가 보세요.</div>
+        <div class="meta">건축물대장 32만 8천 줄 + OpenStreetMap · AI 그림 없음 · 하루 · 클로드 Opus 5.5와 작업</div>
+        <span class="play">돌려 보기 →</span>
+      </div>
+    </a>
+    <a class="work" href="https://bgm.wonjang.lol">
+      <img src="img/bgm.jpg" alt="BGM Maker 첫 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">운영 중인 서비스</div>
+        <div class="name">BGM Maker</div>
+        <div class="desc">장면을 글로 쓰면 배경음악과 효과음이 만들어집니다. 영상 만드는 사람들이 쓰는 서비스.</div>
+        <span class="play">써 보기 →</span>
+      </div>
+    </a>
+    <a class="work" href="ep04/">
+      <img src="img/ep04.jpg" alt="렌즈 속 정답 시작 화면, 한국 시험장 교실" loading="lazy" />
+      <div class="body">
+        <div class="kind">3D 게임 · 가상 상황</div>
+        <div class="name">렌즈 속 정답</div>
+        <div class="desc">AI 안경을 끼고 시험장에 앉았습니다. 엔딩 10개.</div>
+        <div class="meta">9시간 48분 · 코드 10,294줄, 외부 라이브러리 0개 · 실제 시험·인물과 무관</div>
+        <span class="play">해 보기 →</span>
+      </div>
+    </a>
+  </div>
+
+  <h2>AI 게임 대결</h2>
+  <p class="sub">두 AI에게 똑같은 한 줄을 주고 게임을 만들게 했습니다. 코드는 AI가 만든 그대로. (PC · 키보드 + 마우스)</p>
+
+  <div class="round">1라운드 · 3D 배틀로얄</div>
   <p class="prompt"><b>프롬프트</b>브라우저에서 바로 플레이할 수 있는 3D 배틀로얄 게임 만들어줘. 이 폴더 안에만 만들고, index.html을 브라우저로 열면 바로 실행되게.</p>
-  <div class="games">
-    <a class="game" href="ep01/gpt/">
-      <div class="model">GPT-6 아스트라 · Codex</div>
-      <div class="name">라스트 라이트</div>
-      <div class="meta">15분 · 코드 981줄 + three.js</div>
-      <span class="play">해 보기 →</span>
+  <div class="pair">
+    <a class="work" href="ep01/gpt/">
+      <img src="img/ep01_gpt.jpg" alt="라스트 라이트 시작 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">GPT-6 아스트라 · Codex</div>
+        <div class="name">라스트 라이트</div>
+        <div class="meta">15분 · 코드 981줄 + three.js</div>
+        <span class="play">해 보기 →</span>
+      </div>
     </a>
-    <a class="game" href="ep01/claude/">
-      <div class="model">클로드 페이블 5.2 · Claude Code</div>
-      <div class="name">오로라 폴</div>
-      <div class="meta">140분 · 코드 7,619줄, 외부 라이브러리 0개</div>
-      <span class="play">해 보기 →</span>
+    <a class="work" href="ep01/claude/">
+      <img src="img/ep01_claude.jpg" alt="오로라 폴 시작 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">클로드 페이블 5.2 · Claude Code</div>
+        <div class="name">오로라 폴</div>
+        <div class="meta">140분 · 코드 7,619줄, 외부 라이브러리 0개</div>
+        <span class="play">해 보기 →</span>
+      </div>
     </a>
   </div>
 
-  <h2>2라운드 · 이긴 클로드에게 하루 더</h2>
+  <div class="round">2라운드 · 이긴 클로드에게 하루 더</div>
   <p class="prompt"><b>부탁 5개</b>① 덜 억울하게 ② 더 자연스럽게 ③ 탈것 ④ 봇 팀원이랑 스쿼드 ⑤ 직접 돌려 보고 고치기</p>
-  <div class="games">
-    <a class="game" href="ep02/">
-      <div class="model">클로드 페이블 5.2 · Claude Code · 하루 뒤</div>
-      <div class="name">오로라 폴 2</div>
-      <div class="meta">13시간 · 코드 13,359줄, 외부 라이브러리 0개 · 탈것 · 스쿼드</div>
-      <span class="play">해 보기 →</span>
+  <div class="pair">
+    <a class="work" href="ep02/">
+      <img src="img/ep02.jpg" alt="오로라 폴 2 시작 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">클로드 페이블 5.2 · Claude Code · 하루 뒤</div>
+        <div class="name">오로라 폴 2</div>
+        <div class="meta">13시간 · 코드 13,359줄, 외부 라이브러리 0개 · 탈것 · 스쿼드</div>
+        <span class="play">해 보기 →</span>
+      </div>
     </a>
   </div>
 
-  <h2>3라운드 · 3D 카트 레이싱</h2>
+  <div class="round">3라운드 · 3D 카트 레이싱</div>
   <p class="prompt"><b>프롬프트</b>브라우저에서 바로 플레이할 수 있는 3D 카트 레이싱 게임 만들어줘. 드리프트하면 부스터가 차게. 이 폴더 안에만 만들고, index.html을 브라우저로 열면 바로 실행되게.</p>
-  <div class="games">
-    <a class="game" href="ep03/gpt/">
-      <div class="model">GPT-6 아스트라 · Codex</div>
-      <div class="name">듄 드리프트</div>
-      <div class="meta">14분 30초 · 코드 329줄, 외부 라이브러리 0개 · 카트 4대 · 3랩</div>
-      <span class="play">해 보기 →</span>
+  <div class="pair">
+    <a class="work" href="ep03/gpt/">
+      <img src="img/ep03_gpt.jpg" alt="듄 드리프트 시작 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">GPT-6 아스트라 · Codex</div>
+        <div class="name">듄 드리프트</div>
+        <div class="meta">14분 30초 · 코드 329줄, 외부 라이브러리 0개 · 카트 4대 · 3랩</div>
+        <span class="play">해 보기 →</span>
+      </div>
     </a>
-    <a class="game" href="ep03/claude/">
-      <div class="model">클로드 페이블 5.2 · Claude Code</div>
-      <div class="name">선드리프트 GP</div>
-      <div class="meta">92분 · 코드 5,620줄, 외부 라이브러리 0개 · 카트 8대 · 난이도 3단계</div>
-      <span class="play">해 보기 →</span>
-    </a>
-  </div>
-
-  <h2>4편 · AI 안경 끼고 시험 보기 (가상)</h2>
-  <p class="prompt"><b>부탁 5개</b>① 한국 시험장 그대로 ② 진짜 학교 교실처럼 ③ AI 안경 ④ 엔딩 여러 개 ⑤ 직접 돌려 보고 고치기</p>
-  <div class="games">
-    <a class="game" href="ep04/">
-      <div class="model">클로드 페이블 5.2 · Claude Code</div>
-      <div class="name">렌즈 속 정답</div>
-      <div class="meta">9시간 48분 · 코드 10,294줄, 외부 라이브러리 0개 · 엔딩 10개 · 실제 시험·인물과 무관한 가상 상황</div>
-      <span class="play">해 보기 →</span>
+    <a class="work" href="ep03/claude/">
+      <img src="img/ep03_claude.jpg" alt="선드리프트 GP 시작 화면" loading="lazy" />
+      <div class="body">
+        <div class="kind">클로드 페이블 5.2 · Claude Code</div>
+        <div class="name">선드리프트 GP</div>
+        <div class="meta">92분 · 코드 5,620줄, 외부 라이브러리 0개 · 카트 8대 · 난이도 3단계</div>
+        <span class="play">해 보기 →</span>
+      </div>
     </a>
   </div>
 
-  <h2>번외 · 서울 632년 3D</h2>
-  <p class="prompt"><b>부탁</b>서울이 1394년부터 지금까지 자라는 걸 진짜 데이터로 지어 줘</p>
-  <div class="games">
-    <a class="game" href="seoul/">
-      <div class="model">클로드 Opus 5.5 · Claude Code</div>
-      <div class="name">서울 632년</div>
-      <div class="meta">하루 · 코드 3,253줄 · 건축물대장 32만 8천 줄 + OpenStreetMap · AI 그림 없음</div>
-      <span class="play">돌려 보기 →</span>
-    </a>
-  </div>
+  <section id="contact">
+    <h2>이런 거, 만들어 드립니다</h2>
+    <p>위에 있는 것 같은 걸 맡기고 싶으면 연락 주세요. 유료로 진행하고, 먼저 이야기부터 나눕니다.</p>
+    <ol>
+      <li>뭘 만들고 싶은지 (비슷한 예가 있으면 링크)</li>
+      <li>언제까지 필요한지</li>
+      <li>생각하는 예산</li>
+    </ol>
+    <div class="btns">
+      <a class="btn main" id="contact-btn" href="mailto:wonjangc9@gmail.com?subject=%5B%EC%A0%9C%EC%9E%91%20%EB%AC%B8%EC%9D%98%5D%20&amp;body=1.%20%EB%AD%98%20%EB%A7%8C%EB%93%A4%EA%B3%A0%20%EC%8B%B6%EC%9D%80%EC%A7%80%20%28%EB%B9%84%EC%8A%B7%ED%95%9C%20%EC%98%88%EA%B0%80%20%EC%9E%88%EC%9C%BC%EB%A9%B4%20%EB%A7%81%ED%81%AC%29%0A%0A2.%20%EC%96%B8%EC%A0%9C%EA%B9%8C%EC%A7%80%20%ED%95%84%EC%9A%94%ED%95%9C%EC%A7%80%0A%0A3.%20%EC%83%9D%EA%B0%81%ED%95%98%EB%8A%94%20%EC%98%88%EC%82%B0%0A">메일로 문의하기</a>
+    </div>
+    <p class="mail">wonjangc9@gmail.com</p>
+    <div>
+    </div>
+  </section>
 
-  <footer>두 게임 코드는 AI가 만든 그대로 올렸습니다. 라스트 라이트는 three.js(MIT)를 씁니다.</footer>
+  <footer>게임 코드는 AI가 만든 그대로 올렸습니다. 라스트 라이트는 three.js(MIT)를 씁니다. 서울 632년 지도 자료 © OpenStreetMap contributors.</footer>
 </main>
 </body>
 </html>

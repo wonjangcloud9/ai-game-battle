@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>해돌전쟁 — 세 진영 실시간 전략</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23141a22'/%3E%3Cpath d='M16 4l7 9-3 13h-8L9 13z' fill='%23ffd23f' stroke='%2317120e' stroke-width='1.5'/%3E%3Cpath d='M16 4l2 9-5 11-4-11z' fill='%23fff3b0'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="topbar">
+    <div class="res" id="res-sun" title="해돌"><span class="ico" data-ico="sun"></span><b id="v-sun">0</b></div>
+    <div class="res" id="res-dew" title="달이슬"><span class="ico" data-ico="dew"></span><b id="v-dew">0</b></div>
+    <div class="res" id="res-sup" title="보급 (사용 / 한도)"><span class="ico" data-ico="supply"></span><b id="v-sup">0/0</b></div>
+    <div class="spacer"></div>
+    <div class="clock" id="v-clock">00:00</div>
+    <button class="tb" id="btn-idle" title="쉬는 일꾼 고르기 (` 또는 F1)"><span class="ico" data-ico="idle"></span><b id="v-idle">0</b></button>
+    <button class="tb" id="btn-army" title="전투 유닛 모두 고르기 (F2 또는 Ctrl+A)"><span class="ico" data-ico="army"></span></button>
+    <button class="tb" id="btn-speed" title="게임 속도">1×</button>
+    <button class="tb" id="btn-menu" title="메뉴 (Esc)">☰</button>
+  </div>
+  <div id="msgs"></div>
+  <div id="guide" class="panel hidden"></div>
+  <div id="scoreboard" class="panel hidden"></div>
+  <div id="bottom">
+    <div id="mmwrap" class="panel"><canvas id="minimap"></canvas></div>
+    <div id="selpanel" class="panel"></div>
+    <div id="cardwrap" class="panel"><div id="card"></div></div>
+  </div>
+  <div id="groups"></div>
+  <button id="power" class="hidden"><span class="pico"></span><span class="ptxt"><b id="pw-name"></b><small id="pw-state"></small></span><kbd>F</kbd><i id="pw-fill"></i></button>
+  <div id="tooltip" class="hidden"></div>
+</div>
+
+<div id="menu" class="overlay">
+  <div class="menu-inner">
+    <h1 class="logo"><span class="gem"></span>해돌전쟁</h1>
+    <p class="tagline">해돌을 캐고, 기지를 세우고, 군대를 일으켜 상대의 기지를 무너뜨려라</p>
+    <p id="narrow">PC용 게임입니다 — 마우스와 키보드가 필요하고, 창을 가로 900px 이상으로 넓히면 편합니다.</p>
+    <div id="factions"></div>
+    <div id="options"></div>
+    <div class="menu-buttons">
+      <button id="btn-start" class="big primary">게임 시작</button>
+      <button id="btn-watch" class="big">컴퓨터끼리 관전</button>
+      <button id="btn-help" class="big">조작법</button>
+    </div>
+    <p class="foot">마우스와 키보드로 즐기는 1인용 게임 · 모든 그림과 소리는 코드로 직접 만들었습니다</p>
+  </div>
+</div>
+
+<div id="pause" class="overlay hidden"><div class="dialog" id="pause-inner"></div></div>
+<div id="help" class="overlay hidden"><div class="dialog wide" id="help-inner"></div></div>
+<div id="result" class="overlay hidden"><div class="dialog wide" id="result-inner"></div></div>
+<div id="loading" class="overlay hidden"><div class="dialog"><h2>전장을 준비하는 중…</h2></div></div>
+
+<script src="js/core/00-base.js"></script>
+<script src="js/core/10-data.js"></script>
+<script src="js/core/20-map.js"></script>
+<script src="js/core/30-nav.js"></script>
+<script src="js/core/40-world.js"></script>
+<script src="js/core/50-units.js"></script>
+<script src="js/core/60-buildings.js"></script>
+<script src="js/core/65-powers.js"></script>
+<script src="js/core/70-commands.js"></script>
+<script src="js/core/80-ai.js"></script>
+<script src="js/core/90-sim.js"></script>
+<script src="js/client/sprites.js"></script>
+<script src="js/client/sprites-units.js"></script>
+<script src="js/client/sprites-buildings.js"></script>
+<script src="js/client/terrain.js"></script>
+<script src="js/client/fx.js"></script>
+<script src="js/client/render.js"></script>
+<script src="js/client/audio.js"></script>
+<script src="js/client/ui.js"></script>
+<script src="js/client/input.js"></script>
+<script src="js/client/main.js"></script>
+</body>
+</html>

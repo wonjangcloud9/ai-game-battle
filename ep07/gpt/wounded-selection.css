@@ -1,0 +1,51 @@
+#woundedSelection:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: max-content;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 2px 6px;
+  min-height: 23px;
+  border: 1px solid #826d63;
+  border-radius: 3px;
+  background: #3a302e;
+  color: #f5d2ad;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+#woundedSelection i {
+  box-sizing: border-box;
+  width: 13px;
+  height: 6px;
+  border: 1px solid currentColor;
+  background: linear-gradient(to right, currentColor 40%, transparent 40%);
+}
+#woundedSelection.restoring { color: #d5ead7; background: #2d3935; border-color: #637f72; }
+#woundedSelection.restoring i { background: currentColor; }
+#woundedSelection:hover:enabled, #woundedSelection:focus-visible { border-color: currentColor; }
+#woundedSelection:disabled { opacity: .8; }
+#woundedSelection kbd { min-width: 13px; padding: 0 2px; font-size: 9px; }
+.selection-panel { container: unit-selection / inline-size; }
+@container unit-selection (max-width: 300px) {
+  .panel-heading:has(#woundedSelection:not([hidden])) { gap: 3px; }
+  .panel-heading:has(#woundedSelection:not([hidden])) > i,
+  .panel-heading:has(#woundedSelection:not([hidden])) #selectionCount { display: none; }
+  .panel-heading:has(#woundedSelection:not([hidden])) h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+  }
+  .panel-heading:has(#woundedSelection:not([hidden])) #splitForce { margin-left: auto; }
+}
+@container unit-selection (max-width: 220px) {
+  .panel-heading:has(#woundedSelection:not([hidden])) kbd { display: none; }
+}
+@media(max-height:500px) and (orientation:landscape) {
+  #woundedSelection:not([hidden]) { min-height: 18px; padding: 1px 4px; gap: 3px; font-size: 10px; }
+}

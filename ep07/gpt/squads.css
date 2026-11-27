@@ -1,0 +1,27 @@
+.squad-strip { position:relative; display:inline-flex; align-items:center; gap:3px; padding:3px 4px; max-width:100%; border:1px solid #615a6d; border-radius:4px; background:#252632ed; color:#d9d2e1; }
+.squad-caption { margin:0 3px; font-size:11px; font-weight:700; white-space:nowrap; }
+.squad-slot { display:flex; align-items:stretch; height:25px; background:#30303b; border:1px solid #514d5c; border-radius:2px; }
+.squad-slot.squad-filled { border-color:#797082; }
+.squad-slot.squad-selected { background:#45394f; border-color:#ba9bd9; }
+.squad-main, .squad-more, .squad-next { display:inline-flex; justify-content:center; align-items:center; padding:0; min-width:0; border-radius:1px; color:#d3cbdc; }
+.squad-main { gap:2px; padding:0 3px; min-width:29px; }
+.squad-main:disabled { opacity:.62; }
+.squad-key { font:700 11px/1 var(--mono); color:#e0cbf7; }
+.squad-count { font:600 10px/1 var(--mono); color:#c3c0cd; }
+.squad-icon { width:18px; height:18px; image-rendering:pixelated; }
+.squad-more { width:17px; border-left:1px solid #53505c; font-weight:700; font-size:12px; }
+.squad-next { width:17px; height:25px; font:650 18px/1 var(--mono); }
+.squad-strip button:hover:not(:disabled) { background:#504459; }
+.squad-menu { position:absolute; z-index:5; left:0; bottom:calc(100% + 5px); min-width:min(225px,82vw); padding:9px; border:1px solid #877895; border-radius:4px; background:#252430; box-shadow:0 4px 18px #11121b80; }
+[data-squad-menu="down"] .squad-menu { top:calc(100% + 5px); bottom:auto; }
+.squad-menu-head { display:flex; align-items:center; justify-content:space-between; }
+.squad-menu-head strong { font-size:13px; color:#e0c8f7; }
+.squad-menu-close { padding:0 5px; font:17px/1 var(--mono); color:#bdb6c8; }
+.squad-composition { display:block; padding:4px 0 8px; color:#c8c0cf; font-size:11px; line-height:1.5; }
+.squad-menu-tools { display:flex; gap:4px; }
+.squad-edit-action { padding:4px 7px; font:inherit; font-size:11px; white-space:nowrap; border:1px solid #5d5567; border-radius:3px; background:#34303e; }
+.squad-edit-action:disabled { opacity:.44; }
+@media(pointer:coarse) {
+  .squad-slot,.squad-next { height:34px; } .squad-more,.squad-next { width:26px; } .squad-main { min-width:33px; } .squad-edit-action { min-height:32px; }
+}
+@media(max-width:420px) { .squad-caption { display:none; } }
